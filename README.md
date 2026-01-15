@@ -38,6 +38,8 @@ convert -size 128x128 xc:blue icon128.png
 3. 「パッケージ化されていない拡張機能を読み込む」をクリック
 4. このプロジェクトのディレクトリを選択
 
+**注意**: 拡張機能のコードを更新した場合は、必ず `chrome://extensions/` で拡張機能の再読み込みを行ってください。
+
 ## 使い方
 
 ### 1. 設定
@@ -60,6 +62,7 @@ convert -size 128x128 xc:blue icon128.png
 - **メッセージにユーザー名を追加**: 発言者のユーザー名を追加（標準ではアカウントIDのみ）
 - **リアクション情報を削除**: 不要な場合にチェック
 - **添付ファイルをダウンロード**: 添付ファイルもダウンロードする
+- **CSV形式でもエクスポート**: JSON形式に加えてCSV形式でもメッセージをエクスポート
 
 ### 2. エクスポート実行
 
@@ -75,12 +78,15 @@ convert -size 128x128 xc:blue icon128.png
 
 - `init_load.json`: 全ルーム情報
 - `{ルームID}_load_chat.json`: ルーム詳細情報
-- `{ルームID}_messages.json`: メッセージデータ
+- `{ルームID}_messages.json`: メッセージデータ（JSON形式）
+- `{ルームID}_messages.csv`: メッセージデータ（CSV形式、設定で有効にした場合）
 - `{ルームID}_account_info.json`: アカウント情報
 - `{ルームID}_{ルーム名}.txt`: ルーム名参照用の空ファイル
 - `{ルームID}_{ファイルID}_{ファイル名}`: 添付ファイル
 
-## messages.jsonの構造
+## エクスポートファイルの構造
+
+### messages.json（JSON形式）
 
 ```json
 [
@@ -99,6 +105,25 @@ convert -size 128x128 xc:blue icon128.png
 ]
 ```
 
+### messages.csv（CSV形式）
+
+CSV形式では以下のカラムが含まれます：
+
+| カラム名  | 説明                               |
+| --------- | ---------------------------------- |
+| id        | メッセージID                       |
+| aid       | アカウントID                       |
+| aid_name  | ユーザー名（設定で有効にした場合） |
+| datetime  | 投稿日時（設定で有効にした場合）   |
+| type      | メッセージタイプ                   |
+| msg       | メッセージ内容                     |
+| tm        | タイムスタンプ                     |
+| utm       | 更新タイムスタンプ                 |
+| index     | ルーム内のメッセージ番号           |
+| reactions | リアクション情報（JSON文字列）     |
+
+CSV形式はExcelやGoogle スプレッドシートで開くことができます。
+
 ## 注意事項
 
 - このツールはChatworkの非公式APIを使用しています
@@ -108,13 +133,12 @@ convert -size 128x128 xc:blue icon128.png
 
 ## ファイル構成
 
-```
+```tree
 .
 ├── manifest.json          # 拡張機能の設定ファイル
 ├── popup.html            # 設定画面のHTML
-├── popup.js              # 設定画面のロジック
+├── popup.js              # 設定画面のロジック + エクスポート処理
 ├── styles.css            # 設定画面のスタイル
-├── content.js            # メイン処理（Chatworkページに注入）
 ├── background.js         # バックグラウンドスクリプト
 ├── icon16.png            # アイコン（16x16）
 ├── icon48.png            # アイコン（48x48）
