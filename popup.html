@@ -1,102 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatwork Log Exporter</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Chatwork Log Exporter</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatwork Log Exporter</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Chatwork Log Exporter</h1>
 
-    <div class="section">
-      <h2>基本設定</h2>
+      <div class="section">
+        <h2>基本設定</h2>
 
-      <div class="form-group">
-        <label for="hostUrl">
-          チャットワークのホスト名
-          <span class="hint">企業用の場合は適宜修正してください</span>
-        </label>
-        <input type="text" id="hostUrl" placeholder="www.chatwork.com">
+        <div class="form-group">
+          <label for="hostUrl">
+            チャットワークのホスト名
+            <span class="hint">企業用の場合は適宜修正してください</span>
+          </label>
+          <input type="text" id="hostUrl" placeholder="www.chatwork.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="intervalTime">
+            通信間隔 (ミリ秒)
+            <span class="hint"
+              >データ規模が大きい場合は1000（1秒）程度を推奨</span
+            >
+          </label>
+          <input
+            type="number"
+            id="intervalTime"
+            min="100"
+            step="100"
+            placeholder="300"
+          />
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="intervalTime">
-          通信間隔 (ミリ秒)
-          <span class="hint">データ規模が大きい場合は1000（1秒）程度を推奨</span>
-        </label>
-        <input type="number" id="intervalTime" min="100" step="100" placeholder="300">
+      <div class="section">
+        <h2>ルーム設定</h2>
+
+        <div class="form-group">
+          <label for="targetRoomIds">
+            取得したいルームID
+            <span class="hint">カンマ区切りで入力。空欄の場合は全ルーム</span>
+          </label>
+          <textarea
+            id="targetRoomIds"
+            rows="3"
+            placeholder="例: 123456789, 987654321"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="exceptRoomIds">
+            除外するルームID
+            <span class="hint"
+              >カンマ区切りで入力。ログ用ルーム等の除外に使用</span
+            >
+          </label>
+          <textarea
+            id="exceptRoomIds"
+            rows="3"
+            placeholder="例: 123456789"
+          ></textarea>
+        </div>
       </div>
+
+      <div class="section">
+        <h2>カスタマイズ設定</h2>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" id="appendDate" checked />
+            メッセージに日時を追加
+          </label>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" id="appendUsername" checked />
+            メッセージにユーザー名を追加
+          </label>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" id="deleteReactions" />
+            リアクション情報を削除
+          </label>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" id="downloadAttachments" checked />
+            添付ファイルをダウンロード
+          </label>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" id="exportJson" />
+            JSON形式でもエクスポート
+          </label>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button id="saveBtn" class="btn btn-primary">設定を保存</button>
+        <button id="exportBtn" class="btn btn-success">
+          ログをエクスポート
+        </button>
+      </div>
+
+      <div id="status" class="status"></div>
     </div>
 
-    <div class="section">
-      <h2>ルーム設定</h2>
-
-      <div class="form-group">
-        <label for="targetRoomIds">
-          取得したいルームID
-          <span class="hint">カンマ区切りで入力。空欄の場合は全ルーム</span>
-        </label>
-        <textarea id="targetRoomIds" rows="3" placeholder="例: 123456789, 987654321"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="exceptRoomIds">
-          除外するルームID
-          <span class="hint">カンマ区切りで入力。ログ用ルーム等の除外に使用</span>
-        </label>
-        <textarea id="exceptRoomIds" rows="3" placeholder="例: 123456789"></textarea>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>カスタマイズ設定</h2>
-
-      <div class="form-group checkbox">
-        <label>
-          <input type="checkbox" id="appendDate" checked>
-          メッセージに日時を追加
-        </label>
-      </div>
-
-      <div class="form-group checkbox">
-        <label>
-          <input type="checkbox" id="appendUsername" checked>
-          メッセージにユーザー名を追加
-        </label>
-      </div>
-
-      <div class="form-group checkbox">
-        <label>
-          <input type="checkbox" id="deleteReactions">
-          リアクション情報を削除
-        </label>
-      </div>
-
-      <div class="form-group checkbox">
-        <label>
-          <input type="checkbox" id="downloadAttachments" checked>
-          添付ファイルをダウンロード
-        </label>
-      </div>
-
-      <div class="form-group checkbox">
-        <label>
-          <input type="checkbox" id="exportCsv" checked>
-          CSV形式でもエクスポート
-        </label>
-      </div>
-    </div>
-
-    <div class="button-group">
-      <button id="saveBtn" class="btn btn-primary">設定を保存</button>
-      <button id="exportBtn" class="btn btn-success">ログをエクスポート</button>
-    </div>
-
-    <div id="status" class="status"></div>
-  </div>
-
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>
